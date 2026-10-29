@@ -1,0 +1,591 @@
+<!-- ==========================================
+     صفحة المناصب الوظيفية (positions.html)
+     ========================================== -->
+
+<style>
+    /* تنسيقات خاصة بهذه الصفحة فقط */
+    .positions-page {
+        display: grid;
+        grid-template-columns: 1fr 350px; /* العمود الأيمن للجدول، الأيسر للفورم */
+        gap: 25px;
+        align-items: start;
+    }
+
+    /* --- مسار التنقل (Breadcrumbs) --- */
+    .breadcrumbs {
+        font-size: 13px;
+        color: #8c8c8c;
+        margin-bottom: 15px;
+        display: flex;
+        gap: 8px;
+    }
+    .breadcrumbs i { font-size: 10px; margin-top: 4px; }
+
+    /* --- رأس الصفحة --- */
+    .page-header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 25px;
+    }
+    .page-title h1 {
+        font-size: 24px;
+        color: #0d3e37;
+        margin-bottom: 8px;
+        font-weight: 700;
+    }
+    .page-title p {
+        font-size: 14px;
+        color: #666;
+    }
+    .btn-add-new {
+        background-color: #0d6b5c;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: 'Tajawal', sans-serif;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: 0.3s;
+    }
+    .btn-add-new:hover { background-color: #0a5448; }
+
+    /* --- بطاقات الإحصائيات --- */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    .stat-card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        border: 1px solid #f0f0f0;
+    }
+    .stat-info h4 {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+    .stat-info span {
+        font-size: 26px;
+        font-weight: 700;
+        color: #333;
+    }
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+    }
+    .icon-total { background: #e0f2fe; color: #0284c7; }
+    .icon-vacant { background: #dcfce7; color: #16a34a; }
+    .icon-recruit { background: #fef3c7; color: #d97706; }
+    .icon-closed { background: #f1f5f9; color: #475569; }
+
+    /* --- الفلاتر والبحث --- */
+    .filters-bar {
+        display: flex;
+        gap: 15px;
+        background: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #f0f0f0;
+    }
+    .filter-input-group {
+        position: relative;
+        flex: 2;
+    }
+    .filter-input-group input {
+        width: 100%;
+        padding: 10px 40px 10px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        outline: none;
+    }
+    .filter-input-group i {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999;
+    }
+    .filter-select {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        color: #333;
+        outline: none;
+        background: #fff;
+    }
+
+    /* --- الجدول --- */
+    .table-container {
+        background: #fff;
+        border-radius: 10px;
+        border: 1px solid #f0f0f0;
+        padding: 15px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: right;
+    }
+    th {
+        padding: 15px 10px;
+        border-bottom: 1px solid #f0f0f0;
+        color: #666;
+        font-size: 13px;
+        font-weight: 500;
+        background-color: #fcfcfc;
+    }
+    td {
+        padding: 15px 10px;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+        color: #333;
+    }
+    tr:last-child td { border-bottom: none; }
+
+    /* شارات الحالة */
+    .status-badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-block;
+    }
+    .status-green { background: #dcfce7; color: #16a34a; }
+    .status-orange { background: #fef3c7; color: #d97706; }
+    .status-grey { background: #f1f5f9; color: #475569; }
+
+    /* أزرار الإجراءات */
+    .action-btns { display: flex; gap: 8px; }
+    .action-btns button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+    }
+    .btn-view { color: #0284c7; background: #e0f2fe; }
+    .btn-edit { color: #0284c7; background: #e0f2fe; }
+    .btn-delete { color: #dc2626; background: #fee2e2; }
+    .action-btns button:hover { opacity: 0.8; }
+
+    /* الترقيم */
+    .pagination-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #f0f0f0;
+        font-size: 13px;
+        color: #666;
+    }
+    .pagination-btns { display: flex; gap: 5px; }
+    .pagination-btns button {
+        width: 32px;
+        height: 32px;
+        border: 1px solid #e0e0e0;
+        background: #fff;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: 'Tajawal', sans-serif;
+        color: #333;
+    }
+    .pagination-btns button.active {
+        background: #0d6b5c;
+        color: #fff;
+        border-color: #0d6b5c;
+    }
+
+    /* --- النموذج الجانبي (إضافة / تعديل) --- */
+    .form-panel {
+        background: #fff;
+        border-radius: 10px;
+        padding: 25px;
+        border: 1px solid #f0f0f0;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    .form-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .form-header i { font-size: 20px; color: #0d3e37; }
+    .form-header h2 { font-size: 18px; color: #0d3e37; font-weight: 700; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+        display: block;
+        font-size: 13px;
+        color: #333;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+    .form-group label span { color: #dc2626; }
+    
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        color: #333;
+        outline: none;
+        background: #fff;
+    }
+    .form-control:focus { border-color: #0d6b5c; }
+    textarea.form-control { resize: vertical; min-height: 80px; }
+
+    /* تخصيص حقل الاختيار ليحاكي الصورة (وجود نقطة خضراء) */
+    .status-select-wrapper { position: relative; }
+    .status-dot {
+        position: absolute;
+        left: 12px; /* في RTL يوضع على اليسار */
+        top: 50%;
+        transform: translateY(-50%);
+        width: 10px;
+        height: 10px;
+        background: #22c55e;
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+    }
+    .form-actions button {
+        flex: 1;
+        padding: 12px;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        transition: 0.3s;
+    }
+    .btn-save { background: #0d6b5c; color: #fff; }
+    .btn-save:hover { background: #0a5448; }
+    .btn-cancel { background: #fff; border: 1px solid #e0e0e0; color: #333; }
+    .btn-cancel:hover { background: #f9f9f9; }
+
+    /* تجاوب الشاشات */
+    @media (max-width: 1100px) {
+        .positions-page { grid-template-columns: 1fr; }
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+        .stats-grid { grid-template-columns: 1fr; }
+        .filters-bar { flex-direction: column; }
+        .page-header-top { flex-direction: column; gap: 15px; }
+    }
+</style>
+
+<div class="positions-page">
+    
+    <!-- القسم الأيمن (الجدول والإحصائيات) -->
+    <div class="main-column">
+        
+        <!-- مسار التنقل -->
+        <div class="breadcrumbs">
+            <span>الرئيسية</span> <i class="fa-solid fa-chevron-left"></i>
+            <span>إدارة المناصب الوظيفية</span> <i class="fa-solid fa-chevron-left"></i>
+            <span>إدارة المناصب الوظيفية</span> <i class="fa-solid fa-chevron-left"></i>
+            <span style="color: #0d3e37; font-weight: 500;">المناصب الوظيفية</span>
+        </div>
+
+        <!-- رأس الصفحة -->
+        <div class="page-header-top">
+            <div class="page-title">
+                <h1>المناصب الوظيفية</h1>
+                <p>إدارة جميع المناصب المتاحة في المؤسسة، مع إمكانية إضافة منصب جديد أو تعديل البيانات.</p>
+            </div>
+            <button class="btn-add-new">
+                <i class="fa-solid fa-plus"></i> إضافة منصب وظيفي جديد
+            </button>
+        </div>
+
+        <!-- بطاقات الإحصائيات -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h4>إجمالي المناصب</h4>
+                    <span>12</span>
+                </div>
+                <div class="stat-icon icon-total"><i class="fa-solid fa-briefcase"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h4>مناصب شاغرة</h4>
+                    <span>4</span>
+                </div>
+                <div class="stat-icon icon-vacant"><i class="fa-solid fa-user-check"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h4>قيد التوظيف</h4>
+                    <span>5</span>
+                </div>
+                <div class="stat-icon icon-recruit"><i class="fa-solid fa-users"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h4>مغلقة</h4>
+                    <span>3</span>
+                </div>
+                <div class="stat-icon icon-closed"><i class="fa-solid fa-lock"></i></div>
+            </div>
+        </div>
+
+        <!-- الفلاتر -->
+        <div class="filters-bar">
+            <div class="filter-input-group">
+                <input type="text" placeholder="ابحث باسم الوظيفة أو المصلحة...">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <select class="filter-select">
+                <option>المصلحة: الكل</option>
+                <option>الموارد البشرية</option>
+                <option>المالية والمحاسبة</option>
+            </select>
+            <select class="filter-select">
+                <option>حالة المنصب: الكل</option>
+                <option>شاغر</option>
+                <option>قيد التوظيف</option>
+                <option>مغلق</option>
+            </select>
+        </div>
+
+        <!-- الجدول -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>اسم المنصب الوظيفي</th>
+                        <th>المصلحة</th>
+                        <th>عدد المناصب</th>
+                        <th>الحالة</th>
+                        <th>تاريخ الإضافة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>مساعد إداري</td>
+                        <td>الموارد البشرية</td>
+                        <td>2</td>
+                        <td><span class="status-badge status-green">شاغر</span></td>
+                        <td>2025/04/10</td>
+                        <td class="action-btns">
+                            <button class="btn-view"><i class="fa-regular fa-eye"></i></button>
+                            <button class="btn-edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-delete"><i class="fa-regular fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>محاسب</td>
+                        <td>المالية والمحاسبة</td>
+                        <td>1</td>
+                        <td><span class="status-badge status-orange">قيد التوظيف</span></td>
+                        <td>2025/04/08</td>
+                        <td class="action-btns">
+                            <button class="btn-view"><i class="fa-regular fa-eye"></i></button>
+                            <button class="btn-edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-delete"><i class="fa-regular fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>مسؤول أرشيف</td>
+                        <td>الإدارة العامة</td>
+                        <td>1</td>
+                        <td><span class="status-badge status-grey">مغلق</span></td>
+                        <td>2025/04/05</td>
+                        <td class="action-btns">
+                            <button class="btn-view"><i class="fa-regular fa-eye"></i></button>
+                            <button class="btn-edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-delete"><i class="fa-regular fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>مطور برمجيات</td>
+                        <td>الإعلام الآلي</td>
+                        <td>1</td>
+                        <td><span class="status-badge status-green">شاغر</span></td>
+                        <td>2025/04/01</td>
+                        <td class="action-btns">
+                            <button class="btn-view"><i class="fa-regular fa-eye"></i></button>
+                            <button class="btn-edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-delete"><i class="fa-regular fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>مكلف بالتوظيف</td>
+                        <td>الموارد البشرية</td>
+                        <td>1</td>
+                        <td><span class="status-badge status-orange">قيد التوظيف</span></td>
+                        <td>2025/03/28</td>
+                        <td class="action-btns">
+                            <button class="btn-view"><i class="fa-regular fa-eye"></i></button>
+                            <button class="btn-edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-delete"><i class="fa-regular fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>مسؤول الجودة</td>
+                        <td>الجودة</td>
+                        <td>1</td>
+                        <td><span class="status-badge status-grey">مغلق</span></td>
+                        <td>2025/03/20</td>
+                        <td class="action-btns">
+                            <button class="btn-view"><i class="fa-regular fa-eye"></i></button>
+                            <button class="btn-edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-delete"><i class="fa-regular fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>تقني صيانة</td>
+                        <td>الصيانة</td>
+                        <td>2</td>
+                        <td><span class="status-badge status-green">شاغر</span></td>
+                        <td>2025/03/15</td>
+                        <td class="action-btns">
+                            <button class="btn-view"><i class="fa-regular fa-eye"></i></button>
+                            <button class="btn-edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-delete"><i class="fa-regular fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>أخصائي تسويق</td>
+                        <td>التسويق</td>
+                        <td>1</td>
+                        <td><span class="status-badge status-green">شاغر</span></td>
+                        <td>2025/03/10</td>
+                        <td class="action-btns">
+                            <button class="btn-view"><i class="fa-regular fa-eye"></i></button>
+                            <button class="btn-edit"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-delete"><i class="fa-regular fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <!-- ترقيم الصفحات -->
+            <div class="pagination-wrapper">
+                <span>عرض 1 - 8 من 12</span>
+                <div class="pagination-btns">
+                    <button><i class="fa-solid fa-chevron-right"></i></button>
+                    <button class="active">1</button>
+                    <button>2</button>
+                    <button><i class="fa-solid fa-chevron-left"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- القسم الأيسر (نموذج الإضافة) -->
+    <div class="side-column">
+        <div class="form-panel">
+            <div class="form-header">
+                <i class="fa-solid fa-briefcase"></i>
+                <h2>إضافة / تعديل منصب وظيفي</h2>
+            </div>
+
+            <form action="#" method="POST">
+                <div class="form-group">
+                    <label>اسم المنصب الوظيفي <span>*</span></label>
+                    <input type="text" class="form-control" placeholder="مثال: مساعد إداري" required>
+                </div>
+
+                <div class="form-group">
+                    <label>المصلحة التابعة <span>*</span></label>
+                    <select class="form-control" required>
+                        <option value="" disabled selected>اختر المصلحة...</option>
+                        <option>الموارد البشرية</option>
+                        <option>المالية والمحاسبة</option>
+                        <option>الإدارة العامة</option>
+                        <option>الإعلام الآلي</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>عدد المناصب المطلوبة <span>*</span></label>
+                    <input type="number" class="form-control" value="1" min="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label>الحالة <span>*</span></label>
+                    <div class="status-select-wrapper">
+                        <select class="form-control" required>
+                            <option>شاغر</option>
+                            <option>قيد التوظيف</option>
+                            <option>مغلق</option>
+                        </select>
+                        <!-- النقطة الخضراء الصغيرة في حقل الحالة -->
+                        <span class="status-dot"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>تاريخ الإضافة</label>
+                    <input type="date" class="form-control" value="2025-04-10">
+                </div>
+
+                <div class="form-group">
+                    <label>ملاحظات (اختياري)</label>
+                    <textarea class="form-control" placeholder="أدخل أي ملاحظات إضافية..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">حفظ</button>
+                    <button type="button" class="btn-cancel">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

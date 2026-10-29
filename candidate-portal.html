@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مساحة المترشّح | MWM Smart HR</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="candidate.css">
+</head>
+<body>
+<div class="candidate-app" id="candidate-app">
+  <aside class="c-sidebar" id="c-sidebar">
+    <a href="candidate-portal.html" class="c-brand" aria-label="MWM Smart HR"><span class="c-logo"><svg viewBox="0 0 70 70" aria-hidden="true"><g fill="currentColor"><circle cx="35" cy="9" r="5"/><circle cx="18" cy="24" r="4"/><circle cx="52" cy="24" r="4"/><ellipse cx="27" cy="31" rx="7" ry="14" transform="rotate(-30 27 31)"/><ellipse cx="43" cy="31" rx="7" ry="14" transform="rotate(30 43 31)"/><path d="M32 23c-4 9-4 17-2 25h10c2-8 2-16-2-25z"/><path d="M35 42c-8 4-13 9-17 17h34c-4-8-9-13-17-17z"/><path d="M35 40v21" stroke="#0d6b5c" stroke-width="2" fill="none"/></g></svg></span><span><b>MWM Smart HR</b><small>مساحة المترشّح</small></span></a>
+    <div class="c-side-label">مساحتك المهنية</div>
+    <nav class="c-nav" aria-label="القائمة الرئيسية">
+      <button class="active" data-view="dashboard"><i class="fa-solid fa-house"></i><span>الرئيسية</span></button>
+      <button data-view="jobs"><i class="fa-solid fa-briefcase"></i><span>الوظائف المتاحة</span><span class="nav-count" id="c-jobs-count">0</span></button>
+      <button data-view="applications"><i class="fa-solid fa-file-circle-check"></i><span>طلباتي</span><span class="nav-count" id="c-app-count">0</span></button>
+      <button data-view="profile"><i class="fa-regular fa-id-card"></i><span>ملفي المهني</span></button>
+      <button data-view="security"><i class="fa-solid fa-shield-halved"></i><span>إعدادات الحساب</span></button>
+    </nav>
+    <div class="c-sidebar-bottom"><div class="c-help-icon"><i class="fa-regular fa-circle-question"></i></div><b>هل تحتاج إلى مساعدة؟</b><p>راجع تفاصيل كل منصب ومتطلباته قبل إرسال طلب الترشح.</p><button data-view="jobs">استكشاف الوظائف <i class="fa-solid fa-arrow-left"></i></button></div>
+    <div class="c-sidebar-footer"><span class="c-mini-dot"></span> Your Future, Our Priority</div>
+  </aside>
+  <div class="c-mobile-scrim" id="c-scrim"></div>
+  <main class="c-main">
+    <header class="c-topbar">
+      <div class="c-top-start"><button class="c-menu-toggle" id="c-menu-toggle" aria-label="فتح القائمة"><i class="fa-solid fa-bars"></i></button><div class="c-breadcrumb"><span>مساحة المترشّح</span><i class="fa-solid fa-chevron-left"></i><b id="c-current-page">الرئيسية</b></div></div>
+      <div class="c-top-actions"><span class="c-top-note"><i class="fa-regular fa-circle-check"></i> تابع فرصك في مكان واحد</span><button class="c-avatar-button" data-view="profile" id="c-top-avatar" aria-label="الملف الشخصي">م</button><div class="c-top-user"><b id="c-top-name">المترشّح</b><small>حساب مترشّح</small></div><button class="c-logout" id="c-logout" title="تسجيل الخروج"><i class="fa-solid fa-arrow-right-from-bracket"></i></button></div>
+    </header>
+    <section class="c-content" id="c-content" aria-live="polite"><div class="c-loading"><i class="fa-solid fa-circle-notch fa-spin"></i><span>جارٍ تجهيز مساحتك...</span></div></section>
+    <footer class="c-footer"><span>MWM Smart HR</span><span>مساحة المترشّح · نسخة تجريبية محلية</span></footer>
+  </main>
+</div>
+<div id="c-toast" role="status" aria-live="polite"></div>
+<div class="c-modal-layer" id="c-modal-layer" hidden></div>
+<script src="candidate.js"></script>
+</body>
+</html>

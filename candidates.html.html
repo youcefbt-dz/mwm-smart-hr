@@ -1,0 +1,710 @@
+<!-- ==========================================
+     صفحة إدارة المرشحين (candidates.html)
+     ========================================== -->
+
+<style>
+    /* تنسيقات خاصة بصفحة المرشحين */
+    .cand-page {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* --- مسار التنقل --- */
+    .cand-breadcrumbs {
+        font-size: 13px;
+        color: #8c8c8c;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    .cand-breadcrumbs i { font-size: 10px; }
+
+    /* --- رأس الصفحة --- */
+    .cand-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .cand-page-header h1 {
+        font-size: 24px;
+        color: #0d3e37;
+        margin-bottom: 5px;
+        font-weight: 700;
+    }
+    .cand-page-header p {
+        font-size: 14px;
+        color: #666;
+    }
+    .btn-add-candidate {
+        background: #0d6b5c;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.3s;
+    }
+    .btn-add-candidate:hover { background: #0a5448; }
+
+    /* --- بطاقات الإحصائيات --- */
+    .cand-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+    }
+    .cand-stat-card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        border: 1px solid #f0f0f0;
+    }
+    .cand-stat-info h4 {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+    .cand-stat-info span {
+        font-size: 26px;
+        font-weight: 700;
+        color: #333;
+    }
+    .cand-stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+    }
+    .icon-total { background: #f1f5f9; color: #475569; }
+    .icon-completed { background: #dcfce7; color: #16a34a; }
+    .icon-review { background: #e0f2fe; color: #0284c7; }
+    .icon-new { background: #fef3c7; color: #d97706; }
+
+    /* --- التخطيط العام --- */
+    .cand-layout-grid {
+        display: grid;
+        grid-template-columns: 1fr 320px; /* الجدول يأخذ المساحة الأكبر، الفلاتر ثابتة */
+        gap: 20px;
+        align-items: start;
+    }
+
+    /* --- القسم الأيسر (الجدول) --- */
+    .cand-main-section {
+        background: #fff;
+        border-radius: 10px;
+        border: 1px solid #f0f0f0;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+
+    /* شريط البحث والفلاتر العلوي */
+    .cand-top-filters {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+    .cand-search-input {
+        position: relative;
+        flex: 2;
+    }
+    .cand-search-input input {
+        width: 100%;
+        padding: 10px 40px 10px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        outline: none;
+    }
+    .cand-search-input i {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999;
+    }
+    .cand-filter-select {
+        flex: 1;
+        padding: 10px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        color: #333;
+        outline: none;
+        background: #fff;
+    }
+
+    /* الجدول */
+    .cand-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: right;
+    }
+    .cand-table th {
+        padding: 15px 10px;
+        border-bottom: 1px solid #f0f0f0;
+        color: #666;
+        font-size: 13px;
+        font-weight: 500;
+        background-color: #fcfcfc;
+    }
+    .cand-table td {
+        padding: 15px 10px;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 13px;
+        color: #333;
+        vertical-align: middle;
+    }
+    
+    /* اسم المترشح مع الصورة */
+    .candidate-name-cell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+    }
+    .candidate-avatar {
+        width: 32px;
+        height: 32px;
+        background: #e0f2fe;
+        color: #0284c7;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    /* شارات الحالة */
+    .cand-badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 500;
+        display: inline-block;
+        text-align: center;
+    }
+    .badge-completed { background: #dcfce7; color: #16a34a; }
+    .badge-review { background: #e0f2fe; color: #0284c7; }
+    .badge-scheduled { background: #fef3c7; color: #d97706; }
+    .badge-new { background: #fef3c7; color: #d97706; }
+    .badge-closed { background: #f1f5f9; color: #475569; }
+
+    /* أزرار الإجراءات */
+    .cand-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .btn-view-file {
+        background: #e0f2fe;
+        color: #0284c7;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .btn-print {
+        background: #f1f5f9;
+        color: #475569;
+        border: none;
+        padding: 6px 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+
+    /* الترقيم */
+    .cand-pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #f0f0f0;
+        font-size: 13px;
+        color: #666;
+    }
+    .cand-page-btns { display: flex; gap: 5px; }
+    .cand-page-btns button {
+        width: 32px;
+        height: 32px;
+        border: 1px solid #e0e0e0;
+        background: #fff;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: 'Tajawal', sans-serif;
+        color: #333;
+    }
+    .cand-page-btns button.active {
+        background: #0d6b5c;
+        color: #fff;
+        border-color: #0d6b5c;
+    }
+
+    /* --- القسم الأيمن (تصفية سريعة) --- */
+    .cand-sidebar-filter {
+        background: #fff;
+        border-radius: 10px;
+        border: 1px solid #f0f0f0;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    .cand-sidebar-title {
+        font-size: 16px;
+        color: #0d3e37;
+        font-weight: 700;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filter-group {
+        margin-bottom: 20px;
+    }
+    .filter-group label {
+        display: block;
+        font-size: 13px;
+        color: #333;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+    .filter-select-full {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 13px;
+        outline: none;
+    }
+
+    /* مربعات الاختيار */
+    .checkbox-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: #555;
+        cursor: pointer;
+    }
+    .checkbox-item input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: #0d6b5c; /* لون علامة الصح */
+        cursor: pointer;
+    }
+
+    /* حقول التاريخ */
+    .date-inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .date-inputs input {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 13px;
+        outline: none;
+        color: #333;
+    }
+
+    .btn-apply-filter {
+        width: 100%;
+        background: #fff;
+        color: #0d6b5c;
+        border: 1px solid #0d6b5c;
+        padding: 10px;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: 0.3s;
+        margin-bottom: 20px;
+    }
+    .btn-apply-filter:hover { background: #f0fdf4; }
+
+    /* صندوق المطابقة الذكية */
+    .smart-matching-box {
+        background: #f4fdf9;
+        border: 1px solid #dcfce7;
+        padding: 15px;
+        border-radius: 8px;
+    }
+    .smart-matching-box h4 {
+        font-size: 13px;
+        color: #166534;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .smart-matching-box p {
+        font-size: 12px;
+        color: #15803d;
+        line-height: 1.6;
+        margin-bottom: 10px;
+    }
+    .btn-learn-more {
+        background: transparent;
+        border: none;
+        color: #166534;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: underline;
+        padding: 0;
+    }
+
+    /* شريط التلميح السفلي */
+    .bottom-hint-banner {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 12px 15px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        color: #475569;
+        margin-top: 10px;
+    }
+    .bottom-hint-banner i { color: #0d6b5c; font-size: 16px; }
+
+    /* تجاوب الشاشات */
+    @media (max-width: 1100px) {
+        .cand-layout-grid { grid-template-columns: 1fr; }
+        .cand-stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+        .cand-stats-grid { grid-template-columns: 1fr; }
+        .cand-page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+        .cand-top-filters { flex-direction: column; }
+        .cand-table th, .cand-table td { padding: 10px 5px; font-size: 12px; }
+    }
+</style>
+
+<div class="cand-page">
+    
+    <!-- مسار التنقل -->
+    <div class="cand-breadcrumbs">
+        <span>الرئيسية</span> <i class="fa-solid fa-chevron-left"></i>
+        <span style="color: #0d3e37; font-weight: 500;">إدارة المرشحين</span>
+    </div>
+
+    <!-- رأس الصفحة -->
+    <div class="cand-page-header">
+        <div>
+            <h1>إدارة المرشحين</h1>
+            <p>متابعة طلبات التوظيف، الاطلاع على الملفات، ومراجعة نتائج المقابلة الافتراضية.</p>
+        </div>
+        <button class="btn-add-candidate">
+            <i class="fa-solid fa-plus"></i> إضافة مترشح جديد
+        </button>
+    </div>
+
+    <!-- بطاقات الإحصائيات -->
+    <div class="cand-stats-grid">
+        <div class="cand-stat-card">
+            <div class="cand-stat-info">
+                <h4>إجمالي المترشحين</h4>
+                <span>24</span>
+            </div>
+            <div class="cand-stat-icon icon-total"><i class="fa-regular fa-file-lines"></i></div>
+        </div>
+        <div class="cand-stat-card">
+            <div class="cand-stat-info">
+                <h4>أكملوا المقابلة الافتراضية</h4>
+                <span>10</span>
+            </div>
+            <div class="cand-stat-icon icon-completed"><i class="fa-regular fa-circle-check"></i></div>
+        </div>
+        <div class="cand-stat-card">
+            <div class="cand-stat-info">
+                <h4>قيد المراجعة</h4>
+                <span>6</span>
+            </div>
+            <div class="cand-stat-icon icon-review"><i class="fa-regular fa-clock"></i></div>
+        </div>
+        <div class="cand-stat-card">
+            <div class="cand-stat-info">
+                <h4>طلبات جديدة</h4>
+                <span>8</span>
+            </div>
+            <div class="cand-stat-icon icon-new"><i class="fa-regular fa-calendar-plus"></i></div>
+        </div>
+    </div>
+
+    <!-- التخطيط (الجدول + التصفية السريعة) -->
+    <div class="cand-layout-grid">
+        
+        <!-- القسم الأيسر (الجدول) -->
+        <div class="cand-main-section">
+            
+            <!-- البحث والفلاتر -->
+            <div class="cand-top-filters">
+                <div class="cand-search-input">
+                    <input type="text" placeholder="ابحث باسم المترشح...">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <select class="cand-filter-select">
+                    <option>المنصب المطلوب: الكل</option>
+                    <option>مساعد إداري</option>
+                    <option>مسؤول توظيف</option>
+                </select>
+                <select class="cand-filter-select">
+                    <option>حالة الطلب: الكل</option>
+                    <option>طلب جديد</option>
+                    <option>قيد المراجعة</option>
+                    <option>أكملت المقابلة</option>
+                </select>
+            </div>
+
+            <!-- الجدول -->
+            <table class="cand-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>اسم المترشح</th>
+                        <th>المنصب المطلوب</th>
+                        <th>المؤهل العلمي</th>
+                        <th>الخبرة</th>
+                        <th>المهارات الرئيسية</th>
+                        <th>حالة الطلب</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>
+                            <div class="candidate-name-cell">
+                                <div class="candidate-avatar">س</div> سارة بوزيان
+                            </div>
+                        </td>
+                        <td>مساعد إداري في الموارد البشرية</td>
+                        <td>ليسانس في إدارة الموارد البشرية</td>
+                        <td>سنة واحدة</td>
+                        <td>Excel، تنظيم الملفات، التواصل</td>
+                        <td><span class="cand-badge badge-completed">أكملت المقابلة</span></td>
+                        <td>
+                            <div class="cand-actions">
+                                <button class="btn-view-file"><i class="fa-regular fa-eye"></i> عرض الملف</button>
+                                <button class="btn-print"><i class="fa-solid fa-print"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>
+                            <div class="candidate-name-cell">
+                                <div class="candidate-avatar">أ</div> أحمد بن يوسف
+                            </div>
+                        </td>
+                        <td>مساعد إداري في الموارد البشرية</td>
+                        <td>ليسانس في علوم التسيير</td>
+                        <td>سنتان</td>
+                        <td>Excel، إعداد التقارير، التخطيط</td>
+                        <td><span class="cand-badge badge-review">قيد المراجعة</span></td>
+                        <td>
+                            <div class="cand-actions">
+                                <button class="btn-view-file"><i class="fa-regular fa-eye"></i> عرض الملف</button>
+                                <button class="btn-print"><i class="fa-solid fa-print"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>
+                            <div class="candidate-name-cell">
+                                <div class="candidate-avatar">ي</div> ياسمين قادري
+                            </div>
+                        </td>
+                        <td>مسؤول توظيف</td>
+                        <td>ماستر في إدارة الموارد البشرية</td>
+                        <td>3 سنوات</td>
+                        <td>غير محدد</td>
+                        <td><span class="cand-badge badge-scheduled">موعد مقابلة محدد</span></td>
+                        <td>
+                            <div class="cand-actions">
+                                <button class="btn-view-file"><i class="fa-regular fa-eye"></i> عرض الملف</button>
+                                <button class="btn-print"><i class="fa-solid fa-print"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>
+                            <div class="candidate-name-cell">
+                                <div class="candidate-avatar">ن</div> نور الهدى صالح
+                            </div>
+                        </td>
+                        <td>مسؤول توظيف</td>
+                        <td>ليسانس في علوم التسيير</td>
+                        <td>سنتان</td>
+                        <td>التواصل، تنظيم الملفات</td>
+                        <td><span class="cand-badge badge-new">طلب جديد</span></td>
+                        <td>
+                            <div class="cand-actions">
+                                <button class="btn-view-file"><i class="fa-regular fa-eye"></i> عرض الملف</button>
+                                <button class="btn-print"><i class="fa-solid fa-print"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>
+                            <div class="candidate-name-cell">
+                                <div class="candidate-avatar">م</div> مروان بن عيسى
+                            </div>
+                        </td>
+                        <td>مساعد إداري في الموارد البشرية</td>
+                        <td>ليسانس في إدارة الأعمال</td>
+                        <td>سنة واحدة</td>
+                        <td>Excel، تنظيم الملفات</td>
+                        <td><span class="cand-badge badge-closed">مغلق</span></td>
+                        <td>
+                            <div class="cand-actions">
+                                <button class="btn-view-file"><i class="fa-regular fa-eye"></i> عرض الملف</button>
+                                <button class="btn-print"><i class="fa-solid fa-print"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>
+                            <div class="candidate-name-cell">
+                                <div class="candidate-avatar">ه</div> هبة عياش
+                            </div>
+                        </td>
+                        <td>مساعد إداري في الموارد البشرية</td>
+                        <td>ماستر في إدارة الموارد البشرية</td>
+                        <td>سنتان</td>
+                        <td>التواصل، إعداد التقارير</td>
+                        <td><span class="cand-badge badge-completed">أكملت المقابلة</span></td>
+                        <td>
+                            <div class="cand-actions">
+                                <button class="btn-view-file"><i class="fa-regular fa-eye"></i> عرض الملف</button>
+                                <button class="btn-print"><i class="fa-solid fa-print"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <!-- ترقيم الصفحات -->
+            <div class="cand-pagination">
+                <span>عرض 1 - 6 من 24</span>
+                <div class="cand-page-btns">
+                    <button><i class="fa-solid fa-chevron-right"></i></button>
+                    <button class="active">1</button>
+                    <button>2</button>
+                    <button>3</button>
+                    <button><i class="fa-solid fa-chevron-left"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- القسم الأيمن (تصفية سريعة) -->
+        <div class="cand-sidebar-filter">
+            <div class="cand-sidebar-title">
+                <i class="fa-solid fa-filter"></i> تصفية سريعة
+            </div>
+
+            <div class="filter-group">
+                <label>المنصب المطلوب</label>
+                <select class="filter-select-full">
+                    <option>الكل</option>
+                    <option>مساعد إداري</option>
+                    <option>مسؤول توظيف</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>حالة الطلب</label>
+                <div class="checkbox-list">
+                    <label class="checkbox-item">
+                        <input type="checkbox" checked> جميع الحالات
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox"> طلب جديد
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox"> قيد المراجعة
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox"> أكملت المقابلة الافتراضية
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox"> موعد مقابلة محدد
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox"> مغلق
+                    </label>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label>تاريخ التقديم</label>
+                <div class="date-inputs">
+                    <input type="date" placeholder="من تاريخ">
+                    <input type="date" placeholder="إلى تاريخ">
+                </div>
+            </div>
+
+            <button class="btn-apply-filter">
+                <i class="fa-solid fa-filter"></i> تطبيق الفلاتر
+            </button>
+
+            <!-- صندوق المطابقة الذكية -->
+            <div class="smart-matching-box">
+                <h4><i class="fa-solid fa-brain"></i> المطابقة الافتراضية الذكية</h4>
+                <p>تساعدك على تحليل إجابات المترشحين باستخدام الذكاء الاصطناعي، مع عرض تقرير مفصل لكل مترشح.</p>
+                <button class="btn-learn-more">معرفة المزيد</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- شريط التلميح السفلي -->
+    <div class="bottom-hint-banner">
+        <i class="fa-regular fa-lightbulb"></i>
+        يمكنك من خلال هذه الصفحة استعراض جميع المترشحين، الاطلاع على ملفاتهم، ومراجعة نتائج المقابلات الافتراضية لمساعدتك في اتخاذ القرار المناسب.
+    </div>
+
+</div>

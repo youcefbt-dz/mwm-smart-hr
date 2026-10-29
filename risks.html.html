@@ -1,0 +1,695 @@
+<!-- ==========================================
+     صفحة مخاطر الوظيفة وظروفها (risks.html)
+     ========================================== -->
+
+<style>
+    /* تنسيقات خاصة بصفحة المخاطر والظروف */
+    .risks-page {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* --- مسار التنقل --- */
+    .risks-breadcrumbs {
+        font-size: 13px;
+        color: #8c8c8c;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    .risks-breadcrumbs i { font-size: 10px; }
+
+    /* --- رأس الصفحة --- */
+    .risks-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .risks-page-header h1 {
+        font-size: 24px;
+        color: #0d3e37;
+        margin-bottom: 5px;
+        font-weight: 700;
+    }
+    .risks-page-header p {
+        font-size: 14px;
+        color: #666;
+    }
+    .risks-btn-back {
+        background: #fff;
+        color: #333;
+        border: 1px solid #e0e0e0;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: 0.3s;
+    }
+    .risks-btn-back:hover { background: #f9f9f9; }
+
+    /* --- البطاقة الخضراء العلوية --- */
+    .risks-job-header-card {
+        background: #0d3e37;
+        border-radius: 10px;
+        padding: 20px 25px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #fff;
+    }
+    .risks-job-header-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    .risks-job-icon-box {
+        width: 60px;
+        height: 60px;
+        background: #fff;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: #0d3e37;
+    }
+    .risks-job-title-area h2 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    .risks-job-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 13px;
+        color: #a3c2be;
+    }
+    .risks-job-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .risks-status-badge-light {
+        background: #22c55e;
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    .risks-btn-edit-data {
+        background: transparent;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.3s;
+    }
+    .risks-btn-edit-data:hover { background: rgba(255,255,255,0.1); }
+
+    /* --- التبويبات (Tabs) --- */
+    .risks-tabs-container {
+        display: flex;
+        gap: 25px;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 0;
+        overflow-x: auto;
+        background: #fff;
+        padding: 0 15px;
+        border-radius: 8px 8px 0 0;
+    }
+    .risks-tab-item {
+        font-size: 14px;
+        color: #666;
+        cursor: pointer;
+        padding: 15px 5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        transition: 0.3s;
+        border-bottom: 3px solid transparent;
+    }
+    .risks-tab-item.active {
+        color: #0d3e37;
+        font-weight: 700;
+        border-bottom: 3px solid #0d3e37;
+    }
+    .risks-tab-item i { font-size: 16px; }
+
+    /* --- التخطيط العام (شبكة) --- */
+    .risks-layout-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.3fr; /* عمود الظروف أصغر من عمود المخاطر */
+        gap: 20px;
+        align-items: start;
+    }
+
+    /* --- قسم ظروف العمل (يسار) --- */
+    .conditions-section {
+        background: #fff;
+        border-radius: 10px;
+        border: 1px solid #f0f0f0;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    .section-title {
+        font-size: 16px;
+        color: #0d3e37;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-group label {
+        display: block;
+        font-size: 13px;
+        color: #333;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+    .form-group label span { color: #dc2626; }
+    
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        color: #333;
+        outline: none;
+        background: #fff;
+    }
+    .form-control:focus { border-color: #0d6b5c; }
+
+    /* حقل الوقت */
+    .time-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .time-input-wrapper input {
+        flex: 1;
+        text-align: center;
+    }
+    .time-input-wrapper span {
+        color: #666;
+        font-size: 12px;
+    }
+    .time-input-wrapper i {
+        position: absolute;
+        left: 12px;
+        color: #999;
+        pointer-events: none;
+    }
+
+    /* أزرار التبديل (Radio Toggle) */
+    .toggle-group {
+        display: flex;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        overflow: hidden;
+        width: fit-content;
+    }
+    .toggle-group label {
+        padding: 8px 25px;
+        font-size: 13px;
+        cursor: pointer;
+        margin: 0;
+        transition: 0.2s;
+        color: #666;
+    }
+    .toggle-group input[type="radio"] {
+        display: none;
+    }
+    .toggle-group input[type="radio"]:checked + label {
+        background: #0d6b5c;
+        color: #fff;
+    }
+
+    /* --- قسم جدول المخاطر (يمين) --- */
+    .risks-section {
+        background: #fff;
+        border-radius: 10px;
+        border: 1px solid #f0f0f0;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    
+    .risks-header-top {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 15px;
+    }
+    .btn-add-risk {
+        background: #fff;
+        color: #0d6b5c;
+        border: 1px solid #0d6b5c;
+        padding: 8px 15px;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 13px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.3s;
+    }
+    .btn-add-risk:hover { background: #f0fdf4; }
+
+    /* جدول المخاطر */
+    .risk-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    .risk-table th {
+        background: #fcfcfc;
+        color: #666;
+        font-size: 12px;
+        font-weight: 500;
+        padding: 12px 10px;
+        text-align: right;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .risk-table td {
+        padding: 12px 10px;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 13px;
+        color: #333;
+        vertical-align: middle;
+    }
+    
+    .risk-icon {
+        width: 24px;
+        height: 24px;
+        background: #e0f2fe;
+        color: #0284c7;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        margin-left: 8px;
+    }
+
+    /* شارات مستوى الخطورة */
+    .risk-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 500;
+        display: inline-block;
+    }
+    .badge-medium { background: #fef3c7; color: #d97706; }
+    .badge-high { background: #fee2e2; color: #dc2626; }
+    .badge-low { background: #dcfce7; color: #16a34a; }
+
+    /* أزرار الإجراءات */
+    .risk-actions {
+        display: flex;
+        gap: 8px;
+    }
+    .risk-actions button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        color: #0284c7;
+        transition: 0.2s;
+    }
+    .risk-actions button.delete { color: #dc2626; }
+
+    /* صندوق إجراءات الوقاية */
+    .prevention-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 15px;
+    }
+    .prevention-box h4 {
+        font-size: 14px;
+        color: #0d3e37;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .prevention-box h4 i { color: #0d6b5c; }
+    
+    .prevention-textarea-wrapper {
+        position: relative;
+    }
+    .prevention-textarea-wrapper textarea {
+        width: 100%;
+        border: none;
+        background: transparent;
+        resize: vertical;
+        min-height: 80px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 13px;
+        color: #333;
+        outline: none;
+        line-height: 1.6;
+    }
+    .prevention-char-count {
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        font-size: 11px;
+        color: #999;
+    }
+
+    /* أزرار أسفل الصفحة */
+    .page-bottom-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+    }
+    .btn-draft {
+        background: #fff;
+        color: #333;
+        border: 1px solid #e0e0e0;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn-next-group {
+        display: flex;
+        gap: 10px;
+    }
+    .btn-prev {
+        background: #fff;
+        color: #333;
+        border: 1px solid #e0e0e0;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn-next {
+        background: #0d6b5c;
+        color: #fff;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* تجاوب الشاشات */
+    @media (max-width: 1100px) {
+        .risks-layout-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+        .risks-job-header-card { flex-direction: column; align-items: flex-start; gap: 15px; }
+        .risks-job-header-info { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .risks-job-meta { flex-wrap: wrap; gap: 10px; }
+        .risks-page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+        .risk-table th, .risk-table td { padding: 10px 5px; font-size: 12px; }
+    }
+</style>
+
+<div class="risks-page">
+    
+    <!-- مسار التنقل -->
+    <div class="risks-breadcrumbs">
+        <span>الرئيسية</span> <i class="fa-solid fa-chevron-left"></i>
+        <span>إدارة المناصب الوظيفية</span> <i class="fa-solid fa-chevron-left"></i>
+        <span>بطاقة تعريف الوظيفة</span> <i class="fa-solid fa-chevron-left"></i>
+        <span style="color: #0d3e37; font-weight: 500;">مخاطر الوظيفة وظروفها</span>
+    </div>
+
+    <!-- رأس الصفحة -->
+    <div class="risks-page-header">
+        <div>
+            <h1>مخاطر الوظيفة وظروفها</h1>
+            <p>تحديد المخاطر المحتملة وظروف العمل المرتبطة بالمنصب لضمان بيئة عمل آمنة وملائمة.</p>
+        </div>
+        <button class="risks-btn-back">
+            <i class="fa-solid fa-arrow-left"></i> رجوع
+        </button>
+    </div>
+
+    <!-- البطاقة الخضراء العلوية -->
+    <div class="risks-job-header-card">
+        <div class="risks-job-header-info">
+            <div class="risks-job-icon-box">
+                <i class="fa-solid fa-briefcase"></i>
+            </div>
+            <div class="risks-job-title-area">
+                <h2>مساعد إداري في الموارد البشرية</h2>
+                <div class="risks-job-meta">
+                    <span>2 - المصلحة: الموارد البشرية</span>
+                    <span>عدد المناصب المطلوبة: 2</span>
+                    <span>نوع العقد: دائم</span>
+                    <span>الحالة: <span class="risks-status-badge-light">شاغر</span></span>
+                </div>
+            </div>
+        </div>
+        <button class="risks-btn-edit-data">
+            <i class="fa-solid fa-pen"></i> تعديل البيانات
+        </button>
+    </div>
+
+    <!-- التبويبات (Tabs) -->
+    <div class="risks-tabs-container">
+        <div class="risks-tab-item"><i class="fa-solid fa-graduation-cap"></i> المؤهلات العلمية</div>
+        <div class="risks-tab-item"><i class="fa-solid fa-briefcase"></i> الخبرة المهنية</div>
+        <div class="risks-tab-item"><i class="fa-solid fa-gears"></i> المهارات التقنية</div>
+        <div class="risks-tab-item"><i class="fa-regular fa-id-badge"></i> المهارات المهنية</div>
+        <div class="risks-tab-item"><i class="fa-regular fa-heart"></i> الكفاءات السلوكية</div>
+        <div class="risks-tab-item"><i class="fa-solid fa-file-lines"></i> متطلبات خاصة</div>
+        <div class="risks-tab-item active"><i class="fa-solid fa-shield-halved"></i> مخاطر الوظيفة وظروفها</div>
+    </div>
+
+    <!-- التخطيط (ظروف العمل + جدول المخاطر) -->
+    <div class="risks-layout-grid">
+        
+        <!-- القسم الأيسر (ظروف العمل) -->
+        <div class="conditions-section">
+            <div class="section-title">
+                <i class="fa-solid fa-building"></i> ظروف العمل
+            </div>
+
+            <form>
+                <div class="form-group">
+                    <label>مكان العمل <span>*</span></label>
+                    <select class="form-control">
+                        <option>مقر الشركة (مكتب)</option>
+                        <option>ميداني</option>
+                        <option>عن بعد</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>بيئة العمل <span>*</span></label>
+                    <select class="form-control">
+                        <option>مكتبية</option>
+                        <option>صناعية</option>
+                        <option>خارجية</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>نظام العمل <span>*</span></label>
+                    <select class="form-control">
+                        <option>دوام كامل</option>
+                        <option>دوام جزئي</option>
+                        <option>مناوبات</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>ساعات العمل <span>*</span></label>
+                    <div class="time-input-wrapper">
+                        <input type="time" class="form-control" value="16:30">
+                        <span>إلى</span>
+                        <input type="time" class="form-control" value="18:30">
+                        <i class="fa-regular fa-clock"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>إمكانية العمل الإضافي</label>
+                    <div class="toggle-group">
+                        <input type="radio" id="overtime-no" name="overtime" checked>
+                        <label for="overtime-no">لا</label>
+                        
+                        <input type="radio" id="overtime-yes" name="overtime">
+                        <label for="overtime-yes">نعم</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>التنقلات <span>*</span></label>
+                    <select class="form-control">
+                        <option>ضمن مقر الشركة</option>
+                        <option>بين الفروع</option>
+                        <option>خارج الولاية</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>طبيعة الإشراف <span>*</span></label>
+                    <select class="form-control">
+                        <option>يعمل تحت إشراف مسؤول مصلحة الموارد البشرية</option>
+                        <option>يعمل بشكل مستقل</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>الأدوات والتجهيزات الأساسية <span>*</span></label>
+                    <select class="form-control">
+                        <option>حاسوب، طابعة، هاتف داخلي، برامج مكتب (Excel, Word)</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <!-- القسم الأيمن (إدارة المخاطر) -->
+        <div class="risks-section">
+            
+            <div class="risks-header-top">
+                <button class="btn-add-risk">
+                    <i class="fa-solid fa-plus"></i> إضافة خطر جديد
+                </button>
+            </div>
+
+            <!-- جدول المخاطر -->
+            <table class="risk-table">
+                <thead>
+                    <tr>
+                        <th style="width: 30%;">نوع الخطر</th>
+                        <th style="width: 40%;">وصف الخطر</th>
+                        <th style="width: 20%;">مستوى الخطورة</th>
+                        <th style="width: 10%;">إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="risk-icon"><i class="fa-solid fa-desktop"></i></span> مخاطر إدارية</td>
+                        <td>حدوث أخطاء في إدخال البيانات أو تنظيم الملفات.</td>
+                        <td><span class="risk-badge badge-medium">متوسط</span></td>
+                        <td class="risk-actions">
+                            <button><i class="fa-regular fa-pen-to-square"></i></button>
+                            <button class="delete"><i class="fa-regular fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="risk-icon"><i class="fa-solid fa-user-shield"></i></span> مخاطر تتعلق بالسرية</td>
+                        <td>الوصول غير المصرح به إلى بيانات الموظفين.</td>
+                        <td><span class="risk-badge badge-high">مرتفع</span></td>
+                        <td class="risk-actions">
+                            <button><i class="fa-regular fa-pen-to-square"></i></button>
+                            <button class="delete"><i class="fa-regular fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="risk-icon"><i class="fa-solid fa-gavel"></i></span> مخاطر قانونية</td>
+                        <td>عدم الالتزام بالتشريعات والتنظيمات الخاصة بالموارد البشرية.</td>
+                        <td><span class="risk-badge badge-medium">متوسط</span></td>
+                        <td class="risk-actions">
+                            <button><i class="fa-regular fa-pen-to-square"></i></button>
+                            <button class="delete"><i class="fa-regular fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="risk-icon"><i class="fa-solid fa-brain"></i></span> مخاطر مهنية ونفسية</td>
+                        <td>ضغط العمل وتعدد المهام وضيق الأجل.</td>
+                        <td><span class="risk-badge badge-medium">متوسط</span></td>
+                        <td class="risk-actions">
+                            <button><i class="fa-regular fa-pen-to-square"></i></button>
+                            <button class="delete"><i class="fa-regular fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="risk-icon"><i class="fa-solid fa-notes-medical"></i></span> مخاطر صحية</td>
+                        <td>الإجهاد البصري بسبب العمل الطويل على الحاسوب.</td>
+                        <td><span class="risk-badge badge-low">منخفض</span></td>
+                        <td class="risk-actions">
+                            <button><i class="fa-regular fa-pen-to-square"></i></button>
+                            <button class="delete"><i class="fa-regular fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="risk-icon"><i class="fa-solid fa-box-open"></i></span> مخاطر مادية</td>
+                        <td>تلف أو فقدان الوثائق الورقية أو الإلكترونية.</td>
+                        <td><span class="risk-badge badge-medium">متوسط</span></td>
+                        <td class="risk-actions">
+                            <button><i class="fa-regular fa-pen-to-square"></i></button>
+                            <button class="delete"><i class="fa-regular fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- صندوق إجراءات الوقاية -->
+            <div class="prevention-box">
+                <h4><i class="fa-solid fa-shield-check"></i> إجراءات الوقاية والحد من المخاطر</h4>
+                <div class="prevention-textarea-wrapper">
+                    <textarea rows="3" placeholder="• الالتزام بإجراءات حماية المعلومات والسرية.&#10;• مراجعة البيانات قبل حفظها للتخلص من الأخطاء الإدارية.&#10;• توفير بيئة عمل مريحة وتقليل فترات راحة للحد من الإجهاد البصري.&#10;• استخدام نسخ احتياطية للبيانات والوثائق.">• الالتزام بإجراءات حماية المعلومات والسرية.
+• مراجعة البيانات قبل حفظها للتخلص من الأخطاء الإدارية.
+• توفير بيئة عمل مريحة وتقليل فترات راحة للحد من الإجهاد البصري.
+• استخدام نسخ احتياطية للبيانات والوثائق.</textarea>
+                    <span class="prevention-char-count">0/500</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- أزرار أسفل الصفحة -->
+    <div class="page-bottom-actions">
+        <!-- زر حفظ كمسودة يقع تحت العمود الأيسر -->
+        <div>
+            <button class="btn-draft">
+                <i class="fa-regular fa-floppy-disk"></i> حفظ كمسودة
+            </button>
+        </div>
+        <!-- أزرار السابق والتالي تقع تحت العمود الأيمن -->
+        <div class="btn-next-group">
+            <button class="btn-prev">
+                <i class="fa-solid fa-arrow-right"></i> السابق
+            </button>
+            <button class="btn-next">
+                التالي <i class="fa-solid fa-arrow-left"></i>
+            </button>
+        </div>
+    </div>
+
+</div>

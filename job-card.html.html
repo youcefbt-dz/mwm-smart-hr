@@ -1,0 +1,503 @@
+<!-- ==========================================
+     صفحة بطاقة تعريف الوظيفة (job-card.html)
+     ========================================== -->
+
+<style>
+    /* تنسيقات خاصة بصفحة بطاقة الوظيفة */
+    .job-card-page {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* --- مسار التنقل --- */
+    .breadcrumbs {
+        font-size: 13px;
+        color: #8c8c8c;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    .breadcrumbs i { font-size: 10px; }
+
+    /* --- رأس الصفحة --- */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .page-header h1 {
+        font-size: 24px;
+        color: #0d3e37;
+        margin-bottom: 5px;
+        font-weight: 700;
+    }
+    .page-header p {
+        font-size: 14px;
+        color: #666;
+    }
+    .btn-back {
+        background: #fff;
+        color: #333;
+        border: 1px solid #e0e0e0;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: 0.3s;
+    }
+    .btn-back:hover { background: #f9f9f9; }
+
+    /* --- البطاقة الخضراء العلوية --- */
+    .job-header-card {
+        background: #0d3e37;
+        border-radius: 10px;
+        padding: 20px 25px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #fff;
+    }
+    .job-header-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    .job-icon-box {
+        width: 60px;
+        height: 60px;
+        background: #fff;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: #0d3e37;
+    }
+    .job-title-area h2 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    .job-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 13px;
+        color: #a3c2be;
+    }
+    .job-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .status-badge-light {
+        background: #22c55e;
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    .btn-edit-data {
+        background: transparent;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.3s;
+    }
+    .btn-edit-data:hover { background: rgba(255,255,255,0.1); }
+
+    /* --- التبويبات (Tabs) --- */
+    .tabs-container {
+        display: flex;
+        gap: 20px;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 10px;
+        overflow-x: auto;
+    }
+    .tab-item {
+        font-size: 14px;
+        color: #666;
+        cursor: pointer;
+        padding: 10px 5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        transition: 0.3s;
+    }
+    .tab-item.active {
+        color: #0284c7;
+        font-weight: 700;
+        border-bottom: 2px solid #0284c7;
+    }
+    .tab-item i { font-size: 16px; }
+
+    /* --- التخطيط العام (شبكة) --- */
+    .layout-grid {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 25px;
+        align-items: start;
+    }
+
+    /* --- قسم النموذج (يمين) --- */
+    .form-section {
+        background: #fff;
+        border-radius: 10px;
+        border: 1px solid #f0f0f0;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    .section-title {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+    }
+    .section-title i { color: #0d3e37; }
+
+    /* شبكة الحقول */
+    .form-grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group label {
+        font-size: 13px;
+        color: #333;
+        font-weight: 500;
+    }
+    .form-group label span { color: #dc2626; }
+    
+    .form-control {
+        padding: 10px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        color: #333;
+        outline: none;
+        background: #fff;
+    }
+    .form-control:focus { border-color: #0d6b5c; }
+    textarea.form-control { resize: vertical; min-height: 80px; }
+
+    /* صف كامل العرض */
+    .full-width { grid-column: 1 / -1; }
+
+    /* صندوق المعلومات الأزرق */
+    .info-box-blue {
+        background: #e0f2fe;
+        color: #0284c7;
+        padding: 15px;
+        border-radius: 8px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    /* أزرار أسفل النموذج */
+    .form-footer-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #f0f0f0;
+    }
+    .btn-draft {
+        background: #fff;
+        color: #333;
+        border: 1px solid #e0e0e0;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn-next {
+        background: #0d6b5c;
+        color: #fff;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* --- البطاقة الجانبية (يسار) --- */
+    .sidebar-card {
+        background: #fff;
+        border-radius: 10px;
+        border: 1px solid #f0f0f0;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    .sidebar-card-title {
+        font-size: 16px;
+        color: #0d3e37;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+    
+    .overview-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .overview-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        font-size: 13px;
+    }
+    .overview-label {
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .overview-label i { color: #8c8c8c; font-size: 14px; width: 16px; text-align: center; }
+    .overview-value {
+        color: #333;
+        font-weight: 500;
+        text-align: left;
+        max-width: 60%;
+    }
+    
+    .status-badge-green {
+        background: #dcfce7;
+        color: #16a34a;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    /* صندوق الهدف */
+    .goal-box {
+        background: #f0fdf4;
+        border: 1px solid #dcfce7;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 30px;
+    }
+    .goal-box h4 {
+        font-size: 13px;
+        color: #166534;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .goal-box p {
+        font-size: 12.5px;
+        color: #15803d;
+        line-height: 1.6;
+    }
+
+    /* تجاوب الشاشات */
+    @media (max-width: 1100px) {
+        .layout-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+        .job-header-card { flex-direction: column; align-items: flex-start; gap: 15px; }
+        .job-header-info { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .job-meta { flex-wrap: wrap; gap: 10px; }
+        .form-grid-2 { grid-template-columns: 1fr; }
+        .page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+    }
+</style>
+
+<div class="job-card-page">
+    
+    <!-- مسار التنقل -->
+    <div class="breadcrumbs">
+        <span>الرئيسية</span> <i class="fa-solid fa-chevron-left"></i>
+        <span>إدارة المناصب الوظيفية</span> <i class="fa-solid fa-chevron-left"></i>
+        <span style="color: #0d3e37; font-weight: 500;">بطاقة تعريف الوظيفة</span>
+    </div>
+
+    <!-- رأس الصفحة -->
+    <div class="page-header">
+        <div>
+            <h1>بطاقة تعريف الوظيفة</h1>
+            <p>أدخل جميع المعلومات المتعلقة بالمنصب الوظيفي لتحديد مهامه ومتطلباته ومواصفاته.</p>
+        </div>
+        <button class="btn-back">
+            <i class="fa-solid fa-arrow-left"></i> رجوع
+        </button>
+    </div>
+
+    <!-- البطاقة الخضراء العلوية -->
+    <div class="job-header-card">
+        <div class="job-header-info">
+            <div class="job-icon-box">
+                <i class="fa-solid fa-briefcase"></i>
+            </div>
+            <div class="job-title-area">
+                <h2>مساعد إداري في الموارد البشرية</h2>
+                <div class="job-meta">
+                    <span><i class="fa-solid fa-building"></i> المصلحة: الموارد البشرية</span>
+                    <span><i class="fa-solid fa-users"></i> عدد المناصب المطلوبة: 2</span>
+                    <span><i class="fa-solid fa-list-ol"></i> عدد المناصب المطلوبة: 1</span>
+                    <span>الحالة: <span class="status-badge-light">شاغر</span></span>
+                </div>
+            </div>
+        </div>
+        <button class="btn-edit-data">
+            <i class="fa-solid fa-pen"></i> تعديل البيانات
+        </button>
+    </div>
+
+    <!-- التبويبات (Tabs) -->
+    <div class="tabs-container">
+        <div class="tab-item active"><i class="fa-solid fa-circle-info"></i> 1. المعلومات الأساسية للوظيفة</div>
+        <div class="tab-item"><i class="fa-solid fa-list-check"></i> 2. المهام والمسؤوليات</div>
+        <div class="tab-item"><i class="fa-solid fa-shield-halved"></i> 3. المخاطر وظروف العمل</div>
+        <div class="tab-item"><i class="fa-solid fa-user-graduate"></i> 4. متطلبات شاغل الوظيفة</div>
+        <div class="tab-item"><i class="fa-solid fa-chart-pie"></i> 5. معايير المطابقة والتقييم</div>
+    </div>
+
+    <!-- التخطيط (نموذج + بطاقة جانبية) -->
+    <div class="layout-grid">
+        
+        <!-- القسم الأيمن (النموذج) -->
+        <div class="form-section">
+            <div class="section-title">
+                <i class="fa-solid fa-circle-info"></i> 1. المعلومات الأساسية للوظيفة
+            </div>
+
+            <form>
+                <div class="form-grid-2">
+                    <!-- الحقول -->
+                    <div class="form-group">
+                        <label>اسم الوظيفة <span>*</span></label>
+                        <input type="text" class="form-control" value="مساعد إداري في الموارد البشرية">
+                    </div>
+                    <div class="form-group">
+                        <label>المصلحة التابعة لها <span>*</span></label>
+                        <select class="form-control">
+                            <option>مصلحة الموارد البشرية</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>عدد المناصب المطلوبة <span>*</span></label>
+                        <input type="number" class="form-control" value="2">
+                    </div>
+                    <div class="form-group">
+                        <label>المسؤول المباشر <span>*</span></label>
+                        <select class="form-control">
+                            <option>مسؤول مصلحة الموارد البشرية</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>مكان العمل <span>*</span></label>
+                        <select class="form-control">
+                            <option>المقر الرئيسي للشركة</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>نوع العقد <span>*</span></label>
+                        <select class="form-control">
+                            <option>عقد عمل دائم</option>
+                        </select>
+                    </div>
+
+                    <!-- الوصف العام (عرض كامل) -->
+                    <div class="form-group full-width">
+                        <label>الوصف العام للوظيفة</label>
+                        <textarea class="form-control" rows="3">دعم أعمال مصلحة الموارد البشرية من خلال تنظيم الملفات، تحديث البيانات، والمساهمة في إعداد التقارير الإدارية.</textarea>
+                    </div>
+
+                    <!-- تاريخ الإضافة -->
+                    <div class="form-group full-width" style="max-width: 300px;">
+                        <label>تاريخ إضافة المنصب</label>
+                        <input type="date" class="form-control" value="2025-04-10">
+                    </div>
+                </div>
+
+                <!-- صندوق المعلومات -->
+                <div class="info-box-blue">
+                    <i class="fa-solid fa-circle-info"></i>
+                    هذه المعلومات أساسية وستستخدم لتحديد المتطلبات الأخرى المتعلقة بالمنصب.
+                </div>
+
+                <!-- أزرار التحكم -->
+                <div class="form-footer-actions">
+                    <button type="button" class="btn-draft">
+                        <i class="fa-regular fa-floppy-disk"></i> حفظ كمسودة
+                    </button>
+                    <button type="button" class="btn-next">
+                        التالي <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- القسم الأيسر (بطاقة النظرة العامة) -->
+        <div class="sidebar-card">
+            <div class="sidebar-card-title">
+                <i class="fa-solid fa-clipboard-list"></i> نظرة عامة على المنصب
+            </div>
+
+            <div class="overview-list">
+                <div class="overview-item">
+                    <div class="overview-label"><i class="fa-regular fa-user"></i> اسم الوظيفة</div>
+                    <div class="overview-value">مساعد إداري في الموارد البشرية</div>
+                </div>
+                <div class="overview-item">
+                    <div class="overview-label"><i class="fa-solid fa-building"></i> المصلحة</div>
+                    <div class="overview-value">مصلحة الموارد البشرية</div>
+                </div>
+                <div class="overview-item">
+                    <div class="overview-label"><i class="fa-solid fa-users"></i> عدد المناصب</div>
+                    <div class="overview-value">2</div>
+                </div>
+                <div class="overview-item">
+                    <div class="overview-label"><i class="fa-regular fa-circle-check"></i> الحالة</div>
+                    <div class="overview-value"><span class="status-badge-green">شاغر</span></div>
+                </div>
+            </div>
+
+            <!-- صندوق الهدف -->
+            <div class="goal-box">
+                <h4><i class="fa-solid fa-bullseye"></i> الهدف من هذه البطاقة</h4>
+                <p>تحديد طبيعة المنصب ومهامه ومتطلباته ومواصفاته، لتسهيل عملية اختيار المرشحين المناسبين والمطابقة الذكية بينهم وبين الوظيفة.</p>
+            </div>
+        </div>
+
+    </div>
+</div>

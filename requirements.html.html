@@ -1,0 +1,524 @@
+<!-- ==========================================
+     صفحة متطلبات شاغل الوظيفة (requirements.html)
+     ========================================== -->
+
+<style>
+    /* تنسيقات خاصة بصفحة المتطلبات */
+    .requirements-page {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* --- مسار التنقل --- */
+    .req-breadcrumbs {
+        font-size: 13px;
+        color: #8c8c8c;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+    .req-breadcrumbs i { font-size: 10px; }
+
+    /* --- رأس الصفحة --- */
+    .req-page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .req-page-header h1 {
+        font-size: 24px;
+        color: #0d3e37;
+        margin-bottom: 5px;
+        font-weight: 700;
+    }
+    .req-page-header p {
+        font-size: 14px;
+        color: #666;
+    }
+    .req-btn-back {
+        background: #fff;
+        color: #333;
+        border: 1px solid #e0e0e0;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: 0.3s;
+    }
+    .req-btn-back:hover { background: #f9f9f9; }
+
+    /* --- البطاقة الخضراء العلوية --- */
+    .req-job-header-card {
+        background: #0d3e37;
+        border-radius: 10px;
+        padding: 20px 25px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #fff;
+    }
+    .req-job-header-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    .req-job-icon-box {
+        width: 60px;
+        height: 60px;
+        background: #fff;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: #0d3e37;
+    }
+    .req-job-title-area h2 {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+    .req-job-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 13px;
+        color: #a3c2be;
+    }
+    .req-job-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .req-status-badge-light {
+        background: #22c55e;
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    .req-btn-edit-data {
+        background: transparent;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 8px 15px;
+        border-radius: 8px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.3s;
+    }
+    .req-btn-edit-data:hover { background: rgba(255,255,255,0.1); }
+
+    /* --- التبويبات (Tabs) --- */
+    .req-tabs-container {
+        display: flex;
+        gap: 25px;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 0;
+        overflow-x: auto;
+        background: #fff;
+        padding: 0 15px;
+        border-radius: 8px 8px 0 0;
+    }
+    .req-tab-item {
+        font-size: 14px;
+        color: #666;
+        cursor: pointer;
+        padding: 15px 5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        transition: 0.3s;
+        border-bottom: 3px solid transparent;
+    }
+    .req-tab-item.active {
+        color: #0d3e37;
+        font-weight: 700;
+        border-bottom: 3px solid #0d3e37;
+    }
+    .req-tab-item i { font-size: 16px; }
+
+    /* --- التخطيط العام (شبكة) --- */
+    .req-layout-grid {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 25px;
+        align-items: start;
+    }
+
+    /* --- قسم المحتوى الرئيسي (يمين) --- */
+    .req-main-section {
+        background: #fff;
+        border-radius: 10px;
+        border: 1px solid #f0f0f0;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    .req-section-title {
+        font-size: 16px;
+        color: #0d3e37;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+    }
+    .req-section-subtitle {
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 25px;
+        margin-right: 26px; /* لمحاذاة النص تحت العنوان */
+    }
+
+    /* التقسيم الداخلي (صندوق الأهمية + النموذج) */
+    .req-content-split {
+        display: flex;
+        gap: 25px;
+        align-items: stretch;
+    }
+
+    /* صندوق أهمية المعيار (يسار النموذج) */
+    .req-importance-box {
+        width: 220px;
+        background: #f4fdf9;
+        border: 1px solid #dcfce7;
+        border-radius: 8px;
+        padding: 25px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        flex-shrink: 0;
+    }
+    .req-importance-icon {
+        width: 50px;
+        height: 50px;
+        background: #dcfce7;
+        color: #16a34a;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+    .req-importance-box h4 {
+        font-size: 14px;
+        color: #166534;
+        margin-bottom: 10px;
+    }
+    .req-importance-box p {
+        font-size: 12.5px;
+        color: #15803d;
+        line-height: 1.6;
+    }
+
+    /* النموذج (يمين صندوق الأهمية) */
+    .req-form-area {
+        flex: 1;
+    }
+    .req-form-group {
+        margin-bottom: 20px;
+    }
+    .req-form-group label {
+        display: block;
+        font-size: 13px;
+        color: #333;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+    .req-form-group label span { color: #dc2626; }
+    
+    .req-form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        font-family: 'Tajawal', sans-serif;
+        font-size: 14px;
+        color: #333;
+        outline: none;
+        background: #fff;
+    }
+    .req-form-control:focus { border-color: #0d6b5c; }
+    
+    .req-textarea-wrapper {
+        position: relative;
+    }
+    .req-textarea-wrapper textarea.req-form-control {
+        resize: vertical;
+        min-height: 100px;
+        padding-bottom: 25px; /* مساحة لعداد الأحرف */
+    }
+    .req-char-count {
+        position: absolute;
+        bottom: 10px;
+        left: 15px;
+        font-size: 11px;
+        color: #999;
+    }
+
+    /* صندوق المعلومات السفلي */
+    .req-info-box-bottom {
+        background: #f0fdf4;
+        border: 1px solid #dcfce7;
+        color: #166534;
+        padding: 15px;
+        border-radius: 8px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .req-info-box-bottom i { color: #16a34a; }
+
+    /* --- البطاقة الجانبية (يسار) --- */
+    .req-sidebar-card {
+        background: #fff;
+        border-radius: 10px;
+        border: 1px solid #f0f0f0;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+    .req-sidebar-title {
+        font-size: 16px;
+        color: #0d3e37;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .req-summary-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .req-summary-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .req-summary-icon {
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        background: #f4f7f6;
+        color: #0d3e37;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+    .req-summary-text h4 {
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 4px;
+        font-weight: 700;
+    }
+    .req-summary-text p {
+        font-size: 12.5px;
+        color: #666;
+        line-height: 1.5;
+    }
+
+    /* تجاوب الشاشات */
+    @media (max-width: 1100px) {
+        .req-layout-grid { grid-template-columns: 1fr; }
+        .req-content-split { flex-direction: column; }
+        .req-importance-box { width: 100%; }
+    }
+    @media (max-width: 768px) {
+        .req-job-header-card { flex-direction: column; align-items: flex-start; gap: 15px; }
+        .req-job-header-info { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .req-job-meta { flex-wrap: wrap; gap: 10px; }
+        .req-page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+    }
+</style>
+
+<div class="requirements-page">
+    
+    <!-- مسار التنقل -->
+    <div class="req-breadcrumbs">
+        <span>الرئيسية</span> <i class="fa-solid fa-chevron-left"></i>
+        <span>إدارة المناصب الوظيفية</span> <i class="fa-solid fa-chevron-left"></i>
+        <span style="color: #0d3e37; font-weight: 500;">متطلبات شاغل الوظيفة</span>
+    </div>
+
+    <!-- رأس الصفحة -->
+    <div class="req-page-header">
+        <div>
+            <h1>متطلبات شاغل الوظيفة</h1>
+            <p>تحديد المؤهلات العلمية والخبرة والمهارات والكفاءات المطلوبة لشغل المنصب.</p>
+        </div>
+        <button class="req-btn-back">
+            <i class="fa-solid fa-arrow-left"></i> رجوع
+        </button>
+    </div>
+
+    <!-- البطاقة الخضراء العلوية -->
+    <div class="req-job-header-card">
+        <div class="req-job-header-info">
+            <div class="req-job-icon-box">
+                <i class="fa-solid fa-briefcase"></i>
+            </div>
+            <div class="req-job-title-area">
+                <h2>مساعد إداري في الموارد البشرية</h2>
+                <div class="req-job-meta">
+                    <span>2 - المصلحة: الموارد البشرية</span>
+                    <span>عدد المناصب المطلوبة: 2</span>
+                    <span>الحالة: <span class="req-status-badge-light">شاغر</span></span>
+                </div>
+            </div>
+        </div>
+        <button class="req-btn-edit-data">
+            <i class="fa-solid fa-pen"></i> تعديل البيانات
+        </button>
+    </div>
+
+    <!-- التبويبات (Tabs) -->
+    <div class="req-tabs-container">
+        <div class="req-tab-item active"><i class="fa-solid fa-graduation-cap"></i> المؤهلات العلمية</div>
+        <div class="req-tab-item"><i class="fa-solid fa-briefcase"></i> الخبرة المهنية</div>
+        <div class="req-tab-item"><i class="fa-solid fa-gears"></i> المهارات التقنية</div>
+        <div class="req-tab-item"><i class="fa-regular fa-id-badge"></i> المهارات المهنية</div>
+        <div class="req-tab-item"><i class="fa-regular fa-heart"></i> الكفاءات السلوكية</div>
+        <div class="req-tab-item"><i class="fa-solid fa-file-lines"></i> متطلبات خاصة</div>
+    </div>
+
+    <!-- التخطيط (نموذج + بطاقة جانبية) -->
+    <div class="req-layout-grid">
+        
+        <!-- القسم الأيمن (المحتوى الرئيسي) -->
+        <div class="req-main-section">
+            <div class="req-section-title">
+                <i class="fa-solid fa-graduation-cap"></i> المؤهلات العلمية
+            </div>
+            <div class="req-section-subtitle">
+                تحديد الشهادة والتخصص المطلوبين لشغل المنصب.
+            </div>
+
+            <div class="req-content-split">
+                <!-- صندوق أهمية المعيار -->
+                <div class="req-importance-box">
+                    <div class="req-importance-icon">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <h4>أهمية هذا المعيار</h4>
+                    <p>تساهم المؤهلات العلمية في تزويد المترشح بالمعرفة الأساسية اللازمة لفهم طبيعة العمل في مصلحة الموارد البشرية.</p>
+                </div>
+
+                <!-- النموذج -->
+                <div class="req-form-area">
+                    <form>
+                        <div class="req-form-group">
+                            <label>الشهادة المطلوبة <span>*</span></label>
+                            <select class="req-form-control">
+                                <option>ليسانس</option>
+                                <option>ماستر</option>
+                                <option>دكتوراه</option>
+                                <option>تقني سامي</option>
+                            </select>
+                        </div>
+
+                        <div class="req-form-group">
+                            <label>التخصص المطلوب <span>*</span></label>
+                            <select class="req-form-control">
+                                <option>إدارة الموارد البشرية</option>
+                                <option>علوم التسيير</option>
+                                <option>علوم اقتصادية</option>
+                            </select>
+                        </div>
+
+                        <div class="req-form-group">
+                            <label>ملاحظات إضافية</label>
+                            <div class="req-textarea-wrapper">
+                                <textarea class="req-form-control" rows="4" placeholder="يفضل أن يكون المرشح حاصلاً على شهادة معترف بها"></textarea>
+                                <span class="req-char-count">41/500</span>
+                            </div>
+                        </div>
+
+                        <div class="req-info-box-bottom">
+                            <i class="fa-solid fa-circle-info"></i>
+                            يمكنك تحديد أكثر من شهادة أو تخصص حسب متطلبات المنصب.
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- القسم الأيسر (بطاقة الملخص) -->
+        <div class="req-sidebar-card">
+            <div class="req-sidebar-title">
+                <i class="fa-solid fa-clipboard-list"></i> ملخص متطلبات المنصب
+            </div>
+
+            <div class="req-summary-list">
+                <div class="req-summary-item">
+                    <div class="req-summary-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <div class="req-summary-text">
+                        <h4>المؤهلات العلمية</h4>
+                        <p>ليسانس في إدارة الموارد البشرية</p>
+                    </div>
+                </div>
+
+                <div class="req-summary-item">
+                    <div class="req-summary-icon"><i class="fa-solid fa-briefcase"></i></div>
+                    <div class="req-summary-text">
+                        <h4>الخبرة المهنية</h4>
+                        <p>سنة واحدة (اختيارية)</p>
+                    </div>
+                </div>
+
+                <div class="req-summary-item">
+                    <div class="req-summary-icon"><i class="fa-solid fa-gears"></i></div>
+                    <div class="req-summary-text">
+                        <h4>المهارات التقنية</h4>
+                        <p>Excel، تنظيم الملفات، إعداد التقارير</p>
+                    </div>
+                </div>
+
+                <div class="req-summary-item">
+                    <div class="req-summary-icon"><i class="fa-regular fa-id-badge"></i></div>
+                    <div class="req-summary-text">
+                        <h4>الكفاءات المهنية</h4>
+                        <p>الدقة، التنظيم، احترام السرية</p>
+                    </div>
+                </div>
+
+                <div class="req-summary-item">
+                    <div class="req-summary-icon"><i class="fa-regular fa-heart"></i></div>
+                    <div class="req-summary-text">
+                        <h4>الكفاءات السلوكية</h4>
+                        <p>التواصل، العمل الجماعي</p>
+                    </div>
+                </div>
+
+                <div class="req-summary-item">
+                    <div class="req-summary-icon"><i class="fa-solid fa-file-lines"></i></div>
+                    <div class="req-summary-text">
+                        <h4>متطلبات خاصة</h4>
+                        <p>إجادة استخدام الحاسوب</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
