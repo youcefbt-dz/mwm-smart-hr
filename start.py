@@ -5,7 +5,7 @@ import os
 import threading
 import webbrowser
 
-PORT = 8000
+PORT = int(os.environ.get("PORT", 8000))
 ROOT = Path(__file__).resolve().parent
 
 class MWMRequestHandler(SimpleHTTPRequestHandler):
@@ -28,14 +28,15 @@ class MWMRequestHandler(SimpleHTTPRequestHandler):
 
 def main():
     os.chdir(ROOT)
-    server = ThreadingHTTPServer(("127.0.0.1", PORT), MWMRequestHandler)
+    server = ThreadingHTTPServer(("0.0.0.0", PORT), MWMRequestHandler)
     print("=" * 54)
     print("MWM Smart HR is running locally")
     print(f"Open: http://127.0.0.1:{PORT}")
     print("Close this window or press Ctrl+C to stop the server.")
     print("Note: this demo stores data in the current browser only.")
     print("=" * 54)
-    threading.Timer(0.8, lambda: webbrowser.open(f"http://127.0.0.1:{PORT}/")).start()
+    if os.environ.get("RENDER") is None:
+        threading.Timer(0.8, lambda: webbrowser.open(f"http://127.0.0.1:{PORT}/")).start()
     try:
         server.serve_forever()
     except KeyboardInterrupt:
