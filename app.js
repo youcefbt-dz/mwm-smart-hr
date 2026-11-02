@@ -236,6 +236,19 @@
     const qualification=byId('decision-qualification');if(qualification)qualification.textContent=`${c.education}`;
     const exp=byId('decision-experience');if(exp)exp.textContent=expText(c.experienceYears);
     const skills=byId('decision-skills');if(skills)skills.textContent=c.skills.join('، ');
+    const answersHost=byId('decision-candidate-answers');
+    if(answersHost){
+      const answerLabels=[
+        ['selfDescription','طريقة التعامل مع المهام الجديدة'],['interests','الاهتمامات والأنشطة'],['strengths','نقاط القوة'],
+        ['development','مجال التطوير'],['workStyle','بيئة العمل المفضلة'],['pressure','التعامل مع ضغط العمل'],
+        ['feedback','التعامل مع الملاحظات'],['motivation','مصادر التحفيز'],['goals','الأهداف المهنية']
+      ];
+      const answers=c.answers||{};
+      const filled=answerLabels.filter(([key])=>String(answers[key]||'').trim());
+      const modern=filled.map(([key,label])=>`<article class="decision-answer"><b>${esc(label)}</b><p>${esc(answers[key])}</p></article>`).join('');
+      const legacy=Object.entries(answers.legacyResponses||{}).filter(([,value])=>String(value||'').trim()).map(([label,value])=>`<article class="decision-answer legacy"><b>${esc(label)} · إجابة سابقة</b><p>${esc(value)}</p></article>`).join('');
+      answersHost.innerHTML=(modern+legacy)||'<p class="decision-answers-empty">لم يُجب المترشّح عن التقييم الذاتي بعد.</p>';
+    }
     const posTitle=byId('decision-position-title');if(posTitle)posTitle.textContent=jobName(p);
     const department=byId('decision-department');if(department)department.textContent=p.department;
     const contract=byId('decision-contract');if(contract)contract.textContent=p.details?.contract||'عقد عمل دائم';

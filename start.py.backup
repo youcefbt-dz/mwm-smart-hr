@@ -1,0 +1,100 @@
+
+from pathlib import Path
+import re
+import shutil
+
+# مسار مشروعك
+PROJECT_DIR = Path(r"C:\Users\Shift\Desktop\MWM")
+FILE = PROJECT_DIR / "start.py"
+
+# التحقق من وجود الملف
+if not FILE.exists():
+    print("ERROR: start.py not found")
+    print("Path:", FILE)
+    input("Press Enter to exit...")
+    raise SystemExit(1)
+
+# قراءة الملف الأصلي
+source = FILE.read_text(encoding="utf-8")
+
+# نسخة احتياطية
+BACKUP = FILE.with_name("start.py.backup")
+
+if not BACKUP.exists():
+    shutil.copy2(FILE, BACKUP)
+    print("Backup created:", BACKUP)
+
+updated = source
+
+# 1. إضافة import os إذا لم يكن موجودًا
+if not re.search(r"^\s*import\s+os\b", updated, re.M):
+    updated = "import os\n" + updated
+
+# 2. تعديل PORT
+updated, port_count = re.subn(
+    r"(?m)^PORT\s*=\s*8000\s*$",
+    'PORT = int(os.environ.get("PORT", 8000))',
+    updated,
+)
+
+# 3. تعديل عنوان الخادم
+updated, host_count = re.subn(
+    r'ThreadingHTTPServer\(\s*\(\s*["\']127\.0\.0\.1["\']\s*,\s*PORT\s*\)',
+    'ThreadingHTTPServer(("0.0.0.0", PORT)',
+    updated,
+)
+
+# 4. تعطيل فتح المتصفح تلقائيًا على Render
+browser_pattern = (
+    r'(?m)^([ \t]*)'
+    r'threading\.Timer\(\s*0\.8\s*,\s*'
+    r'lambda:\s*webbrowser\.open\('
+    r'f"http://127\.0\.0\.1:\{PORT\}/"\)'
+    r'\)\.start\(\)\s*$'
+)
+
+def replace_browser(match):
+    indent = match.group(1)
+    original_line = match.group(0).strip()
+
+    return (
+        f'{indent}if os.environ.get("RENDER") is None:\n'
+        f'{indent}    {original_line}'
+    )
+
+updated, browser_count = re.subn(
+    browser_pattern,
+    replace_browser,
+    updated,
+)
+
+# لا نحفظ إذا لم نجد الأسطر المطلوبة
+if port_count != 1:
+    print("ERROR: Could not find the expected PORT line.")
+    print("Original file was not changed.")
+    raise SystemExit(1)
+
+if host_count != 1:
+    print("ERROR: Could not find the expected server address.")
+    print("Original file was not changed.")
+    raise SystemExit(1)
+
+if browser_count != 1:
+    print("ERROR: Could not find the expected browser timer.")
+    print("Original file was not changed.")
+    raise SystemExit(1)
+
+# حفظ التعديلات
+FILE.write_text(updated, encoding="utf-8")
+
+print()
+print("SUCCESS: start.py updated!")
+print("PORT:", port_count)
+print("HOST:", host_count)
+print("Browser:", browser_count)
+print()
+print("Backup:", BACKUP)
+print()
+print("Next: test locally, then commit and push.")
+
+input("Press Enter to exit...")
